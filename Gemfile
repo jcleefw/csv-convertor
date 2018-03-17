@@ -4,6 +4,8 @@ gem 'pry'
 gem 'byebug'
 gem 'pry-byebug'
 
+gem 'smarter_csv'
+
 group :development do
   gem 'rake'
 end
