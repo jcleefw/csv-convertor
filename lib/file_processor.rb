@@ -3,10 +3,11 @@ class FileProcessor
 
   def initialize(filename)
     @filename = filename
-    @data = read_file
+    normalize_original_file
+    @data = process_csv
   end
 
-  def read_file
+  def normalize_original_file
     return false unless File.exists? "data/#{@filename}"
     data = []
     output = File.open(cleaned_csv_path, "w")
@@ -27,6 +28,10 @@ class FileProcessor
       processed_row << transactions.each do |tsx|
         tsx[:date] = date_transform(tsx[:date])
         tsx[:description] = description_transform(tsx[:description])
+        tsx[:credit] = description_dollar_value(tsx[:credit]) if tsx[:credit]
+        tsx[:debit] = description_dollar_value(tsx[:debit]) if tsx[:debit]
+        tsx[:balance] = description_dollar_value(tsx[:balance])
+
         tsx
       end
     end
@@ -57,5 +62,9 @@ class FileProcessor
     else
       'unknown'
     end
+  end
+
+  def description_dollar_value(value)
+    value.gsub('$', '').gsub(',', '_').to_f unless value.nil?
   end
 end
